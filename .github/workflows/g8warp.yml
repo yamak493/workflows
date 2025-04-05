@@ -15,17 +15,12 @@ jobs:
           echo "Response: $response"
           echo "status=$response" >> $GITHUB_ENV
 
-      - name: Continue if true, else stop
-        if: env.status == 'true'
+      - name: Stop unless true
+        if: env.status != 'true'
         run: |
-          echo "処理は続行されます..."
+          echo "処理は停止されます..."
+          exit 1
 
-      - name: Stop if false
-        if: env.status == 'false'
-        run: |
-          echo "処理は停止されます。"
-          exit 0
-          
       - name: Install dependencies
         run: |
           sudo apt update
