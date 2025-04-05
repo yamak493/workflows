@@ -31,10 +31,6 @@ jobs:
           sudo warp-cli --accept-tos registration new
           sudo warp-cli --accept-tos connect
 
-  G8:
-    runs-on: ubuntu-latest
-
-    steps:
       - name: リポジトリをチェックアウト
         uses: actions/checkout@v4
         with:
