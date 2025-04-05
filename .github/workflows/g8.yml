@@ -30,8 +30,11 @@ jobs:
           pip install --upgrade pip
           pip install -r g8/requirements.txt
 
-      - name: Run a bash script with sudo
-        run: sudo bash -c warp.sh
+      - name: Make script executable
+        run: chmod +x ./warp.sh
+
+      - name: Run script with sudo
+        run: sudo ./warp.sh
         
       - name: Seleniumのテストを実行
         run: |
