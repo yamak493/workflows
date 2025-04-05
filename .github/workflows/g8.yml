@@ -30,11 +30,12 @@ jobs:
           pip install --upgrade pip
           pip install -r g8/requirements.txt
 
-      - name: Make script executable
-        run: chmod +x ./warp.sh
-
-      - name: Run script with sudo
-        run: sudo ./warp.sh
+      - name: Run multiple commands
+        run: |
+          sudo apt update
+          sudo apt install warp-cli
+          warp-cli registration new
+          warp-cli connect
         
       - name: Seleniumのテストを実行
         run: |
