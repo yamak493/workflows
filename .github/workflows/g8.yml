@@ -4,34 +4,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  install-warp:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Install dependencies
-        run: |
-          sudo apt update
-          sudo apt install -y curl gnupg lsb-release
-
-      - name: Add Cloudflare's GPG key
-        run: |
-          curl https://pkg.cloudflareclient.com/pubkey.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg
-
-      - name: Add Cloudflare WARP repository
-        run: |
-          echo "deb [signed-by=/usr/share/keyrings/cloudflare-warp-archive-keyring.gpg] https://pkg.cloudflareclient.com/ $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/cloudflare-client.list
-          sudo apt update
-
-      - name: Install warp-cli
-        run: |
-          sudo apt install -y cloudflare-warp
-
-      - name: Register and connect WARP
-        run: |
-          sudo warp-cli --accept-tos registration new
-          sudo warp-cli --accept-tos connect
-          sleep 5  # WARPの接続を待つ
-
   G8:
     runs-on: ubuntu-latest
 
