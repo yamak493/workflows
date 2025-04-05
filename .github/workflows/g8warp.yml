@@ -8,6 +8,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Fetch data from URL
+        id: fetch_data
+        run: |
+          response=$(curl -s http://made-by-free.com/g8.php)
+          echo "Response: $response"
+          echo "status=$response" >> $GITHUB_ENV
+
+      - name: Continue if true, else stop
+        if: env.status == 'true'
+        run: |
+          echo "The status is true, continuing..."
+          # ここに続行したい処理を記述します
+
+      - name: Stop if false
+        if: env.status == 'false'
+        run: |
+          echo "The status is false, stopping the process."
+          exit 1
+          
       - name: Install dependencies
         run: |
           sudo apt update
