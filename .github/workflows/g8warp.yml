@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  setup-warp:
+  g8warp:
     runs-on: ubuntu-latest
 
     steps:
@@ -31,14 +31,14 @@ jobs:
           sudo warp-cli --accept-tos registration new
           sudo warp-cli --accept-tos connect
 
-      - name: リポジトリをチェックアウト
+      - name: Private Repository Checkout
         uses: actions/checkout@v4
         with:
           repository: yamak493/HostVDS
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           path: g8
 
-      - name: pip キャッシュを有効化
+      - name: Enable Cache (pip)
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
@@ -46,14 +46,14 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
-      - name: Pythonと依存パッケージのセットアップ
+      - name: Setup venv+pip
         run: |
           python -m venv venv
           source venv/bin/activate
           pip install --upgrade pip
           pip install -r g8/requirements.txt
         
-      - name: Seleniumのテストを実行
+      - name: Run selenium
         run: |
           source venv/bin/activate
           cd ./g8/root/comment/
