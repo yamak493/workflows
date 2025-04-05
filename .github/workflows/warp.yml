@@ -28,6 +28,6 @@ jobs:
 
       - name: Register and connect WARP
         run: |
-          sudo warp-cli  --accept-tos registration new
-          sudo warp-cli connect
+          sudo warp-cli --accept-tos registration new
+          sudo warp-cli --accept-tos connect
           sleep 5  # WARPの接続を待つ
