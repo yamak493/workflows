@@ -1,4 +1,4 @@
-name: Install Cloudflare WARP
+name: Setup WARP
 
 on:
   workflow_dispatch:
