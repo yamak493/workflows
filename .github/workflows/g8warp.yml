@@ -1,0 +1,64 @@
+name: G8+WARP
+
+on:
+  workflow_dispatch:
+
+jobs:
+  setup-warp:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y curl gnupg lsb-release
+
+      - name: Add Cloudflare's GPG key
+        run: |
+          curl https://pkg.cloudflareclient.com/pubkey.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg
+
+      - name: Add Cloudflare WARP repository
+        run: |
+          echo "deb [signed-by=/usr/share/keyrings/cloudflare-warp-archive-keyring.gpg] https://pkg.cloudflareclient.com/ $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/cloudflare-client.list
+          sudo apt update
+
+      - name: Install warp-cli
+        run: |
+          sudo apt install -y cloudflare-warp
+
+      - name: Register and connect WARP
+        run: |
+          sudo warp-cli --accept-tos registration new
+          sudo warp-cli --accept-tos connect
+
+  G8:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v4
+        with:
+          repository: yamak493/HostVDS
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          path: g8
+
+      - name: pip キャッシュを有効化
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/g8/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Pythonと依存パッケージのセットアップ
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install --upgrade pip
+          pip install -r g8/requirements.txt
+        
+      - name: Seleniumのテストを実行
+        run: |
+          source venv/bin/activate
+          cd ./g8/root/comment/
+          python g8.py
