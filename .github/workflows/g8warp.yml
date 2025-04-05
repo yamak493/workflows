@@ -3,7 +3,7 @@ name: G8+WARP
 on:
   workflow_dispatch:
   schedule:
-    - cron: '*/15 * * * *'  # 10分ごとに実行
+    - cron: '*/20 * * * *'  # 10分ごとに実行
 
 jobs:
   g8warp:
