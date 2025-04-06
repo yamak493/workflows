@@ -13,7 +13,7 @@ jobs:
       - name: Fetch data from URL
         id: fetch_data
         run: |
-          response=$(curl -s http://made-by-free.com/g8.php)
+          response=$(curl -s http://made-by-free.com/g8.php?count=4)
           echo "Response: $response"
           echo "status=$response" >> $GITHUB_ENV
 
