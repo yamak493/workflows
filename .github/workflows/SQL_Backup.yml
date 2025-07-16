@@ -1,0 +1,41 @@
+name: Backup MariaDB (Save to FTP)
+
+on:
+  schedule:
+    - cron: '0 18 * * *'  # JSTで毎日03:00（UTC18:00）
+  workflow_dispatch:      # 手動トリガーも可能
+
+jobs:
+  backup-and-upload:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install MySQL client
+        run: sudo apt-get update && sudo apt-get install -y mysql-client
+
+      - name: Dump MariaDB database to SQL file
+        env:
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_PORT: ${{ secrets.DB_PORT }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+        run: |
+          mkdir -p backup
+          DATE=$(date +'%Y-%m-%d')
+          FILE="backup/${DATE}.sql"
+          echo "Dumping to $FILE"
+          mysqldump -h "$DB_HOST" -P "$DB_PORT" -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" > "$FILE"
+          echo "Dump complete"
+
+      - name: Upload SQL file via FTP
+        env:
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_USER: ${{ secrets.FTP_USER }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          DATE=$(date +'%Y-%m-%d')
+          FILE="backup/${DATE}.sql"
+          echo "Uploading $FILE to FTP..."
+          curl -T "$FILE" --ftp-create-dirs -u "$FTP_USER:$FTP_PASSWORD" "ftp://$FTP_HOST/$DATE.sql"
+          echo "Upload complete"
