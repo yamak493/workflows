@@ -21,6 +21,7 @@ jobs:
           echo "host = ${{ secrets.FTP_HOST }}" >> ~/.config/rclone/rclone.conf
           echo "user = ${{ secrets.FTP_USER }}" >> ~/.config/rclone/rclone.conf
           echo "pass = ${{ secrets.FTP_PASSWORD }}" >> ~/.config/rclone/rclone.conf
+          echo "encoding = none" >> ~/.config/rclone/rclone.conf
 
       - name: Stream download and upload (no local save)
         run: |
