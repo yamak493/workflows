@@ -24,4 +24,4 @@ jobs:
 
       - name: Stream download and upload (no local save)
         run: |
-          curl -L "https://made-by-free.com/backup/url.txt" | rclone rcat myftp:/minecraft_backup/file.zip
+          curl -L "https://made-by-free.com/backup/url.txt" | rclone rcat myftp:/minecraft_backup/url.txt
