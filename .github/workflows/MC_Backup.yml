@@ -1,4 +1,4 @@
-name: Fast Download and FTP Upload
+name: Fast Download GravelHost-Backup (Save to FTP)
 
 on:
   workflow_dispatch:
@@ -30,5 +30,5 @@ jobs:
         run: |
           curl -T files/downloaded_file \
             --ftp-create-dirs \
-            -u "${{ secrets.FTP_USER }}:${{ secrets.FTP_PASS }}" \
+            -u "${{ secrets.FTP_USER }}:${{ secrets.FTP_PASSWORD }}" \
             "ftp://${{ secrets.FTP_HOST }}/minecraft_backup/"
