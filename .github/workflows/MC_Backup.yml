@@ -21,14 +21,25 @@ jobs:
           FILE_URL=$(curl -sL https://made-by-free.com/backup/url.php)
           echo "file_url=$FILE_URL" >> "$GITHUB_OUTPUT"
 
+      - name: Set file name
+        id: filename
+        run: |
+          DAY=$(date +'%d' | sed 's/^0*//')  # '07' → '7' に変換
+          if [ $((DAY % 2)) -eq 0 ]; then
+            FILE_NAME="MC_Backup_A.tar.gz"
+          else
+            FILE_NAME="MC_Backup_B.tar.gz"
+          fi
+          echo "file_name=$FILE_NAME" >> "$GITHUB_OUTPUT"
+
       - name: Download the file (super fast)
         run: |
           mkdir -p files
-          aria2c --dir=files --out=downloaded_file --max-connection-per-server=16 --split=16 "${{ steps.get_url.outputs.file_url }}"
+          aria2c --dir=files --out="${{ steps.filename.outputs.file_name }}" --max-connection-per-server=16 --split=16 "${{ steps.get_url.outputs.file_url }}"
 
       - name: Upload to FTP server
         run: |
-          curl -T files/downloaded_file \
+          curl -T files/"${{ steps.filename.outputs.file_name }}" \
             --ftp-create-dirs \
             -u "${{ secrets.FTP_USER }}:${{ secrets.FTP_PASSWORD }}" \
             "ftp://${{ secrets.FTP_HOST }}/minecraft_backup/"
