@@ -1,0 +1,45 @@
+name: GravelHost-Backup (rclone)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  download-and-upload:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y rclone curl
+
+      - name: Get actual download URL
+        id: get_url
+        run: |
+          RAW_FILE_URL=$(curl -sL https://made-by-free.com/backup/url.php)
+          DECODED_FILE_URL=$(echo "$RAW_FILE_URL" | sed 's/&amp;/\&/g')
+          echo "file_url=$DECODED_FILE_URL" >> "$GITHUB_OUTPUT"
+
+      - name: Set file name
+        id: filename
+        run: |
+          DAY=$(date +'%d' | sed 's/^0*//')  # '07' → '7' に変換
+          if [ $((DAY % 2)) -eq 0 ]; then
+            FILE_NAME="MC_Backup_A.tar.gz"
+          else
+            FILE_NAME="MC_Backup_B.tar.gz"
+          fi
+          echo "file_name=$FILE_NAME" >> "$GITHUB_OUTPUT"
+
+      - name: Create rclone config
+        run: |
+          mkdir -p ~/.config/rclone
+          echo "[myftp]" > ~/.config/rclone/rclone.conf
+          echo "type = ftp" >> ~/.config/rclone/rclone.conf
+          echo "host = ${{ secrets.FTP_HOST }}" >> ~/.config/rclone/rclone.conf
+          echo "user = ${{ secrets.FTP_USER }}" >> ~/.config/rclone/rclone.conf
+          echo "pass = ${{ secrets.FTP_PASSWORD_OBSCURED }}" >> ~/.config/rclone/rclone.conf
+
+      - name: Stream download and upload (no local save)
+        run: |
+          curl -L "${{ steps.get_url.outputs.file_url }}" | rclone rcat myftp:/minecraft_backup/"${{ steps.filename.outputs.file_name }}"
