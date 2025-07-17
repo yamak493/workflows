@@ -1,4 +1,4 @@
-name: Fast Download GravelHost-Backup (Save to FTP)
+name: Download GravelHost-Backup (Save to FTP)
 
 on:
   workflow_dispatch:
