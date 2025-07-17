@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  download-and-upload:
+  gravelhost-backup-rclone:
     runs-on: ubuntu-latest
 
     steps:
