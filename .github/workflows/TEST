@@ -1,0 +1,27 @@
+name: TEST
+
+on:
+  workflow_dispatch:
+
+jobs:
+  stream_upload:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y rclone curl
+
+      - name: Create rclone config
+        run: |
+          mkdir -p ~/.config/rclone
+          echo "[myftp]" > ~/.config/rclone/rclone.conf
+          echo "type = ftp" >> ~/.config/rclone/rclone.conf
+          echo "host = ${{ secrets.FTP_HOST }}" >> ~/.config/rclone/rclone.conf
+          echo "user = ${{ secrets.FTP_USER }}" >> ~/.config/rclone/rclone.conf
+          echo "pass = ${{ secrets.FTP_PASSWORD }}" >> ~/.config/rclone/rclone.conf
+
+      - name: Stream download and upload (no local save)
+        run: |
+          curl -L "https://made-by-free.com/backup/url.txt" | rclone rcat myftp:/minecraft_backup/file.zip
