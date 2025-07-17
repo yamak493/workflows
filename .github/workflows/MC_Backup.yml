@@ -1,0 +1,34 @@
+name: Fast Download and FTP Upload
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 17 * * *'  # JSTで毎日02:00（UTC18:00）
+
+jobs:
+  download-and-upload:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y aria2 curl
+
+      - name: Get actual download URL
+        id: get_url
+        run: |
+          FILE_URL=$(curl -sL https://made-by-free.com/backup/url.php)
+          echo "file_url=$FILE_URL" >> "$GITHUB_OUTPUT"
+
+      - name: Download the file (super fast)
+        run: |
+          mkdir -p files
+          aria2c --dir=files --out=downloaded_file --max-connection-per-server=16 --split=16 "${{ steps.get_url.outputs.file_url }}"
+
+      - name: Upload to FTP server
+        run: |
+          curl -T files/downloaded_file \
+            --ftp-create-dirs \
+            -u "${{ secrets.FTP_USER }}:${{ secrets.FTP_PASS }}" \
+            "ftp://${{ secrets.FTP_HOST }}/minecraft_backup/"
