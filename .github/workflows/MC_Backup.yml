@@ -18,8 +18,9 @@ jobs:
       - name: Get actual download URL
         id: get_url
         run: |
-          FILE_URL=$(curl -sL https://made-by-free.com/backup/url.php)
-          echo "file_url=$FILE_URL" >> "$GITHUB_OUTPUT"
+          RAW_FILE_URL=$(curl -sL https://made-by-free.com/backup/url.php)
+          DECODED_FILE_URL=$(echo "$RAW_FILE_URL" | sed 's/&amp;/\&/g')
+          echo "file_url=$DECODED_FILE_URL" >> "$GITHUB_OUTPUT"
 
       - name: Set file name
         id: filename
