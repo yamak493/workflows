@@ -7,7 +7,7 @@ on:
 
 jobs:
   # ビルド
-  build:
+  build-upload:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -61,17 +61,6 @@ jobs:
         path: bootstrap/standalone/build/libs/MCXboxBroadcastStandalone.jar
         if-no-files-found: error
 
-  # SFTP アップロード
-  ftp_upload:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-    - name: Download Standalone JAR artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: MCXboxBroadcastStandalone
-        path: ./
-
     - name: Install lftp
       run: sudo apt-get update; sudo apt-get install -y lftp
 
@@ -82,6 +71,7 @@ jobs:
         FTP_PASS: ${{ secrets.WITHER_FTP_PASS }}
       run: |
         lftp -u "$FTP_USER","$FTP_PASS" sftp://$FTP_HOST << 'EOF'
+        set sftp:connect-program "ssh -o StrictHostKeyChecking=no"
         cd ./
         put bootstrap/standalone/build/libs/MCXboxBroadcastStandalone.jar
         bye
