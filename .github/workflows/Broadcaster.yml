@@ -1,4 +1,4 @@
-name: Check Upstream for New Commits
+name: Broadcaster Auto-Update
 
 on:
   schedule:
@@ -61,7 +61,7 @@ jobs:
         path: bootstrap/standalone/build/libs/MCXboxBroadcastStandalone.jar
         if-no-files-found: error
 
-  # FTP アップロード
+  # SFTP アップロード
   ftp_upload:
     needs: build
     runs-on: ubuntu-latest
@@ -75,13 +75,14 @@ jobs:
     - name: Install lftp
       run: sudo apt-get update; sudo apt-get install -y lftp
 
-    - name: Upload Standalone JAR via FTP
+    - name: Upload Standalone JAR via SFTP
       env:
         FTP_HOST: ${{ secrets.WITHER_FTP_HOST }}
         FTP_USER: ${{ secrets.WITHER_FTP_USER }}
         FTP_PASS: ${{ secrets.WITHER_FTP_PASS }}
       run: |
-        lftp -u "$FTP_USER,$FTP_PASS" $FTP_HOST << 'EOF'
+        lftp -u "$FTP_USER","$FTP_PASS" sftp://$FTP_HOST << 'EOF'
+        cd ./
         put bootstrap/standalone/build/libs/MCXboxBroadcastStandalone.jar
         bye
         EOF
