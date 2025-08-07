@@ -1,9 +1,9 @@
 name: Update - Minecraft Plugins
 
 on:
-  push:
-    branches:
-      - main
+  schedule:
+    - cron: '15 16 * * *'  # 日本時間の午前1:15に実行（UTCで16:15）
+  workflow_dispatch:
 
 jobs:
   update-and-upload:
