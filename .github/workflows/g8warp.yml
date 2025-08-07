@@ -1,4 +1,4 @@
-name: G8+WARP
+name: Selenium - G8+WARP
 
 on:
   workflow_dispatch:
