@@ -1,4 +1,4 @@
-name: G8
+name: Selenium - G8
 
 on:
   workflow_dispatch:
