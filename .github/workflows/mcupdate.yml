@@ -1,0 +1,37 @@
+name: Update - Minecraft Plugins
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  update-and-upload:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'  # 必要に応じて変更
+
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt || true  # 必要ならrequirements.txt
+
+    - name: Run mcupdate.py
+      run: python mcupdate.py
+
+    - name: Upload files via SFTP
+      uses: pressidium/lftp-mirror-action@v1
+      with:
+        host: ${{ secrets.GRAVEL_FTP_HOST }}
+        port: ${{ secrets.GRAVEL_FTP_PORT }}
+        user: ${{ secrets.GRAVEL_FTP_USER }}
+        pass: ${{ secrets.GRAVEL_FTP_PASS }}
+        localDir: ./mcupdate
+        remoteDir: /plugins/
+        options: --reverse --only-newer --no-perms --overwrite
