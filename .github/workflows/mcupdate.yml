@@ -32,6 +32,6 @@ jobs:
         port: ${{ secrets.GRAVEL_FTP_PORT }}
         user: ${{ secrets.GRAVEL_FTP_USER }}
         pass: ${{ secrets.GRAVEL_FTP_PASS }}
-        localDir: ./mcupdate
+        localDir: ./mcupdate/
         remoteDir: /plugins/
         options: --reverse --only-newer --no-perms --overwrite
