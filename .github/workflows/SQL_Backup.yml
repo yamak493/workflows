@@ -1,4 +1,4 @@
-name: Backup MariaDB (Save to FTP)
+name: Backup - GravelHost DB (via FTP)
 
 on:
   schedule:
