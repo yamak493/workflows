@@ -1,4 +1,4 @@
-name: Setup WARP
+name: Proxy - Setup WARP
 
 on:
   workflow_dispatch:
