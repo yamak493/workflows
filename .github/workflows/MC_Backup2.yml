@@ -1,4 +1,4 @@
-name: GravelHost-Backup (rclone)
+name: Backup - GravelHost Files (via rclone)
 
 on:
   workflow_dispatch:
