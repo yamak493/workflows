@@ -1,4 +1,4 @@
-name: Download GravelHost-Backup (Save to FTP)
+name: Backup - GravelHost Files (via FTP)
 
 on:
   workflow_dispatch:
