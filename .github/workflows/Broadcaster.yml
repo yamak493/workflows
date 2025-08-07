@@ -1,4 +1,4 @@
-name: Broadcaster Auto-Update
+name: Update - Broadcaster
 
 on:
   schedule:
