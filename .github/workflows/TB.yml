@@ -1,0 +1,39 @@
+name: SEO - TB
+
+on:
+  workflow_dispatch:
+
+jobs:
+  G8:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Botリポジトリをチェックアウト
+        uses: actions/checkout@v4
+        with:
+          repository: yamak493/TrafficBot
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+
+      - name: 設定リポジトリをチェックアウト
+        uses: actions/checkout@v4
+        with:
+          repository: yamak493/TrafficBotTXT
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          path: TXT
+
+      - name: TXTフォルダの内容を1階層上に移動（上書き）
+        run: |
+          cp -rf TXT/* ./
+          rm -rf TXT
+
+      - name: setup.sh を実行
+        run: |
+          chmod +x setup.sh
+          ./setup.sh
+
+      - name: xvfbで run_bot.sh を実行
+        run: |
+          chmod +x run_bot.sh
+          sudo apt-get update
+          sudo apt-get install -y xvfb
+          xvfb-run --server-args="-screen 0 1920x1080x24" ./run_bot.sh --headless 0 --count 1 --surf 1 --stealth 0 --proxy 1 --agent 0 --portal 1 --stay_min 50 --stay_max 100
