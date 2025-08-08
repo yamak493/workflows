@@ -66,12 +66,16 @@ jobs:
 
     - name: Upload Standalone JAR via SFTP
       env:
-        FTP_HOST: ${{ secrets.GULLONAT_FTP_HOST }}
-        FTP_PORT: ${{ secrets.GULLONAT_FTP_PORT }}
-        FTP_USER: ${{ secrets.GULLONAT_FTP_USER }}
-        FTP_PASS: ${{ secrets.GULLONAT_FTP_PASS }}
+        #FTP_HOST: ${{ secrets.GULLONAT_FTP_HOST }}
+        #FTP_PORT: ${{ secrets.GULLONAT_FTP_PORT }}
+        #FTP_USER: ${{ secrets.GULLONAT_FTP_USER }}
+        #FTP_PASS: ${{ secrets.GULLONAT_FTP_PASS }}
+        FTP_HOST: ${{ secrets.WITHER_FTP_HOST }}
+        FTP_USER: ${{ secrets.WITHER_FTP_USER }}
+        FTP_PASS: ${{ secrets.WITHER_FTP_PASS }}
+#        lftp -u "$FTP_USER","$FTP_PASS" sftp://$FTP_HOST:$FTP_PORT << 'EOF'
       run: |
-        lftp -u "$FTP_USER","$FTP_PASS" sftp://$FTP_HOST:$FTP_PORT << 'EOF'
+        lftp -u "$FTP_USER","$FTP_PASS" sftp://$FTP_HOST << 'EOF'
         set sftp:connect-program "ssh -o StrictHostKeyChecking=no"
         cd ./
         put bootstrap/standalone/build/libs/MCXboxBroadcastStandalone.jar
