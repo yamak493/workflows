@@ -74,6 +74,6 @@ jobs:
         lftp -u "$FTP_USER","$FTP_PASS" sftp://$FTP_HOST:$FTP_PORT << 'EOF'
         set sftp:connect-program "ssh -o StrictHostKeyChecking=no"
         cd ./plugins/Geyser-Spigot/extensions/
-        put bootstrap/standalone/build/libs/MCXboxBroadcastExtension.jar
+        put bootstrap/geyser/build/libs/MCXboxBroadcastExtension.jar
         bye
         EOF
