@@ -32,8 +32,6 @@ jobs:
 
     - name: Build
       run: ./gradlew build
-      env:
-        BUILD_NUMBER: ${{ steps.getCurrentBuild.outputs.result }}
 
     - uses: actions/upload-artifact@v4
       if: success()
