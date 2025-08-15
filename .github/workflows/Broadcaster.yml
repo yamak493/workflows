@@ -3,6 +3,7 @@ name: Update - Broadcaster
 on:
   schedule:
     - cron: '15 16 * * *'  # 日本時間の午前1:15に実行（UTCで16:15）
+    - cron: '4 16 * * *'  # 日本時間の午前13:15に実行（UTCで4:15）
   workflow_dispatch:
 
 jobs:
@@ -23,19 +24,6 @@ jobs:
       with:
         java-version: 17
         distribution: temurin
-
-    - name: Get previous build number
-      id: getPreviousBuild
-      run: | 
-        PREVIOUS_TAG=$(git for-each-ref --sort=-version:refname --count 1 --format="%(refname:short)" "refs/tags/*")
-        echo result=${PREVIOUS_TAG} >> $GITHUB_OUTPUT
-
-    - name: Get current build number
-      id: getCurrentBuild
-      if: success()
-      env:
-        PREVIOUS_BUILD: ${{ steps.getPreviousBuild.outputs.result }}
-      run: echo result=$((++PREVIOUS_BUILD)) >> $GITHUB_OUTPUT
 
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v4
@@ -61,19 +49,12 @@ jobs:
         path: bootstrap/standalone/build/libs/MCXboxBroadcastStandalone.jar
         if-no-files-found: error
 
-    - name: Install lftp
-      run: sudo apt-get update; sudo apt-get install -y lftp
-
     - name: Upload Standalone JAR via SFTP
-      env:
-        FTP_HOST: ${{ secrets.GULLONAT_FTP_HOST }}
-        FTP_PORT: ${{ secrets.GULLONAT_FTP_PORT }}
-        FTP_USER: ${{ secrets.GULLONAT_FTP_USER }}
-        FTP_PASS: ${{ secrets.GULLONAT_FTP_PASS }}
-      run: |
-        lftp -u "$FTP_USER","$FTP_PASS" sftp://$FTP_HOST:$FTP_PORT << 'EOF'
-        set sftp:connect-program "ssh -o StrictHostKeyChecking=no"
-        cd ./plugins/Geyser-Spigot/extensions/
-        put bootstrap/standalone/build/libs/MCXboxBroadcastStandalone.jar
-        bye
-        EOF
+      uses: appleboy/scp-action@v1
+      with:
+        host: ${{ secrets.GULLONAT_FTP_HOST }}
+        port: ${{ secrets.GULLONAT_FTP_PORT }}
+        username: ${{ secrets.GULLONAT_FTP_USER }}
+        password: ${{ secrets.GULLONAT_FTP_PASS }}
+        source: "bootstrap/standalone/build/libs/MCXboxBroadcastStandalone.jar"
+        target: "./"
