@@ -47,13 +47,19 @@ jobs:
         path: bootstrap/standalone/build/libs/MCXboxBroadcastStandalone.jar
         if-no-files-found: error
         
-    - name: Upload files via SFTP
-      uses: pressidium/lftp-mirror-action@v1
-      with:
-        host: ${{ secrets.GULLONAT_FTP_HOST }}
-        port: ${{ secrets.GULLONAT_FTP_PORT }}
-        user: ${{ secrets.GULLONAT_FTP_USER }}
-        pass: ${{ secrets.GULLONAT_FTP_PASS }}
-        localDir: bootstrap/standalone/build/libs/
-        remoteDir: ./
-        options: --reverse --only-newer --no-perms --overwrite --include=MCXboxBroadcastStandalone.jar
+    - name: Install lftp
+      run: sudo apt-get update; sudo apt-get install -y lftp
+
+    - name: Upload Standalone JAR via SFTP
+      env:
+        FTP_HOST: ${{ secrets.GULLONAT_FTP_HOST }}
+        FTP_PORT: ${{ secrets.GULLONAT_FTP_PORT }}
+        FTP_USER: ${{ secrets.GULLONAT_FTP_USER }}
+        FTP_PASS: ${{ secrets.GULLONAT_FTP_PASS }}
+      run: |
+        lftp -u "$FTP_USER","$FTP_PASS" sftp://$FTP_HOST:$FTP_PORT << 'EOF'
+        set sftp:connect-program "ssh -o StrictHostKeyChecking=no"
+        cd ./
+        put bootstrap/standalone/build/libs/MCXboxBroadcastStandalone.jar
+        bye
+        EOF
