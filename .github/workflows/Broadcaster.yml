@@ -46,13 +46,14 @@ jobs:
         name: MCXboxBroadcastStandalone
         path: bootstrap/standalone/build/libs/MCXboxBroadcastStandalone.jar
         if-no-files-found: error
-
-    - name: Upload Standalone JAR via SFTP
-      uses: appleboy/scp-action@v1
+        
+    - name: Upload files via SFTP
+      uses: pressidium/lftp-mirror-action@v1
       with:
         host: ${{ secrets.GULLONAT_FTP_HOST }}
         port: ${{ secrets.GULLONAT_FTP_PORT }}
-        username: ${{ secrets.GULLONAT_FTP_USER }}
-        password: ${{ secrets.GULLONAT_FTP_PASS }}
-        source: "bootstrap/standalone/build/libs/MCXboxBroadcastStandalone.jar"
-        target: "./"
+        user: ${{ secrets.GULLONAT_FTP_USER }}
+        pass: ${{ secrets.GULLONAT_FTP_PASS }}
+        localDir: bootstrap/standalone/build/libs/
+        remoteDir: ./
+        options: --reverse --only-newer --no-perms --overwrite --include=MCXboxBroadcastStandalone.jar
