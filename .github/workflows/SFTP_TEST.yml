@@ -1,0 +1,42 @@
+name: Test SFTP Connection
+
+on:
+  workflow_dispatch:
+
+jobs:
+  sftp-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Install sshpass
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y sshpass
+
+    - name: Test connection to GRAVEL server
+      env:
+        FTP_HOST: ${{ secrets.GRAVEL_FTP_HOST }}
+        FTP_PORT: ${{ secrets.GRAVEL_FTP_PORT }}
+        FTP_USER: ${{ secrets.GRAVEL_FTP_USER }}
+        FTP_PASS: ${{ secrets.GRAVEL_FTP_PASS }}
+      run: |
+        echo "Testing SFTP connection to $FTP_HOST:$FTP_PORT as $FTP_USER"
+        sshpass -p "$FTP_PASS" sftp -o StrictHostKeyChecking=no -P "$FTP_PORT" "$FTP_USER@$FTP_HOST" << 'EOF'
+        pwd
+        ls -l
+        bye
+        EOF
+
+    - name: Test connection to GULLONAT server
+      env:
+        FTP_HOST: ${{ secrets.GULLONAT_FTP_HOST }}
+        FTP_PORT: ${{ secrets.GULLONAT_FTP_PORT }}
+        FTP_USER: ${{ secrets.GULLONAT_FTP_USER }}
+        FTP_PASS: ${{ secrets.GULLONAT_FTP_PASS }}
+      run: |
+        echo "Testing SFTP connection to $FTP_HOST:$FTP_PORT as $FTP_USER"
+        sshpass -p "$FTP_PASS" sftp -o StrictHostKeyChecking=no -P "$FTP_PORT" "$FTP_USER@$FTP_HOST" << 'EOF'
+        pwd
+        ls -l
+        bye
+        EOF
