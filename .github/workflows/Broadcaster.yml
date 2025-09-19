@@ -57,9 +57,9 @@ jobs:
         FTP_USER: ${{ secrets.GULLONAT_FTP_USER }}
         FTP_PASS: ${{ secrets.GULLONAT_FTP_PASS }}
       run: |
-        lftp -u "$FTP_USER","$FTP_PASS" sftp://$FTP_HOST:$FTP_PORT << EOF
-        set sftp:connect-program "ssh -o StrictHostKeyChecking=no"
+        lftp -u "$FTP_USER","$FTP_PASS" sftp://$FTP_HOST:$FTP_PORT -e "
+        set sftp:connect-program 'ssh -o StrictHostKeyChecking=no';
         cd ./
-        put bootstrap/standalone/build/libs/MCXboxBroadcastStandalone.jar
+        put bootstrap/standalone/build/libs/MCXboxBroadcastStandalone.jar;
         bye
-        EOF
+        "
