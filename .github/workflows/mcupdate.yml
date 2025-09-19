@@ -2,7 +2,7 @@ name: Update - Minecraft Plugins
 
 on:
   schedule:
-    - cron: '45 8 * * *'  # 日本時間の午前17:45に実行（UTCで8:45）※JST1:15ならUTC16:15
+    - cron: '45 8 * * *'  # 日本時間 17:45（UTC 8:45）
   workflow_dispatch:
 
 jobs:
@@ -16,17 +16,17 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.11'  # 必要に応じて変更
+        python-version: '3.11'
 
     - name: Install dependencies
       run: |
-        pip install -r requirements.txt || true  # 必要ならrequirements.txt
+        pip install -r requirements.txt || true
 
     - name: Run mcupdate.py
       run: python mcupdate.py
 
     - name: Upload files via SFTP
-      uses: appleboy/scp-action@v1
+      uses: appleboy/sftp-action@v1
       with:
         host: ${{ secrets.GRAVEL_FTP_HOST }}
         port: ${{ secrets.GRAVEL_FTP_PORT }}
@@ -34,4 +34,3 @@ jobs:
         password: ${{ secrets.GRAVEL_FTP_PASS }}
         source: "./mcupdate/*"
         target: "/plugins/"
-        protocol: "sftp"
