@@ -26,12 +26,11 @@ jobs:
       run: python mcupdate.py
 
     - name: Upload files via SFTP
-      uses: pressidium/lftp-mirror-action@v1
+      uses: appleboy/scp-action@v1
       with:
         host: ${{ secrets.GRAVEL_FTP_HOST }}
         port: ${{ secrets.GRAVEL_FTP_PORT }}
-        user: ${{ secrets.GRAVEL_FTP_USER }}
-        pass: ${{ secrets.GRAVEL_FTP_PASS }}
-        localDir: ./mcupdate/
-        remoteDir: /plugins/
-        options: --reverse --only-newer --no-perms --overwrite
+        username: ${{ secrets.GRAVEL_FTP_USER }}
+        password: ${{ secrets.GRAVEL_FTP_PASS }}
+        source: "./mcupdate/*"
+        target: "/plugins/"
