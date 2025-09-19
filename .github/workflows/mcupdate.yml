@@ -34,3 +34,4 @@ jobs:
         password: ${{ secrets.GRAVEL_FTP_PASS }}
         source: "./mcupdate/*"
         target: "/plugins/"
+        protocol: "sftp"
