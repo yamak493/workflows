@@ -2,8 +2,8 @@ name: Selenium - G8+WARP
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '*/20 * * * *'  # 10分ごとに実行
+  #schedule:
+  #  - cron: '*/20 * * * *'  # 10分ごとに実行
 
 jobs:
   g8warp:
