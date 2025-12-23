@@ -3,7 +3,6 @@ import requests
 
 vv_filename = ''
 
-
 # ファイルをURLからmcupdateフォルダにダウンロードする
 def download_file(url, save_path):
 
